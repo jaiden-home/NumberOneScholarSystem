@@ -1,0 +1,30 @@
+.history
+.idea
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+yarn*
+stats.html
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
