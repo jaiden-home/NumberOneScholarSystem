@@ -1,0 +1,84 @@
+{
+  "dailyReports": [
+    {
+      "id": "day1",
+      "date": "2025年03月18日",
+      "content": "完成了数学模拟考试",
+      "discipline": "数学",
+      "examHalfTime": "10:30",
+      "examFinishTime": "12:00",
+      "halfTimeCompletion": "50%",
+      "mistakeList": [
+        "https://picsum.photos/150/150?random=1",
+        "https://picsum.photos/150/150?random=2"
+      ],
+      "todo-list": ["整理数学考试错题", "复习几何证明题解题方法", "练习函数应用题"]
+    },
+    {
+      "id": "day2",
+      "date": "2025年03月19日",
+      "content": "完成了英语阅读理解考试",
+      "discipline": "英语",
+      "examHalfTime": "11:15",
+      "examFinishTime": "12:45",
+      "halfTimeCompletion": "45%",
+      "mistakeList": ["https://picsum.photos/150/150?random=3"],
+      "todo-list": ["背记英语考试高频词汇", "练习英语写作模板", "听力训练30分钟"]
+    },
+    {
+      "id": "day3",
+      "date": "2025年03月20日",
+      "content": "正在准备物理模拟考试",
+      "discipline": "物理",
+      "examHalfTime": "",
+      "examFinishTime": "",
+      "halfTimeCompletion": "",
+      "mistakeList": [],
+      "todo-list": ["复习物理力学公式", "整理电路实验笔记", "做2套模拟试卷"]
+    },
+    {
+      "id": "day4",
+      "date": "2025年03月21日",
+      "content": "计划进行化学实验考试",
+      "discipline": "化学",
+      "examHalfTime": "",
+      "examFinishTime": "",
+      "halfTimeCompletion": "",
+      "mistakeList": [],
+      "todo-list": ["复习化学实验操作步骤", "记忆化学方程式配平方法", "整理实验报告模板"]
+    },
+    {
+      "id": "day5",
+      "date": "2025年03月22日",
+      "content": "计划进行生物期末考试",
+      "discipline": "生物",
+      "examHalfTime": "",
+      "examFinishTime": "",
+      "halfTimeCompletion": "",
+      "mistakeList": [],
+      "todo-list": ["复习生物细胞结构知识点", "整理遗传规律笔记", "做生物实验题"]
+    },
+    {
+      "id": "day6",
+      "date": "2025年03月23日",
+      "content": "计划进行历史模拟考试",
+      "discipline": "历史",
+      "examHalfTime": "",
+      "examFinishTime": "",
+      "halfTimeCompletion": "",
+      "mistakeList": [],
+      "todo-list": ["复习中国古代史时间线", "整理近代史重大事件", "练习历史论述题"]
+    },
+    {
+      "id": "day7",
+      "date": "2025年12月28日",
+      "content": "计划进行地理期末考试",
+      "discipline": "地理",
+      "examHalfTime": "",
+      "examFinishTime": "",
+      "halfTimeCompletion": "",
+      "mistakeList": [],
+      "todo-list": ["复习世界地理各大洲特点", "整理中国气候类型分布", "练习地图分析题"]
+    }
+  ]
+}
