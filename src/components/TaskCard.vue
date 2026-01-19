@@ -65,8 +65,6 @@ const priorityLabel = computed(() => {
   return map[props.task.priority] || props.task.priority
 })
 
-
-
 function deleteTask() {
   if (confirm('确定要删除这个任务吗？')) {
     emit('delete', props.task.id)

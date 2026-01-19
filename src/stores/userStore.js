@@ -114,7 +114,10 @@ export const useUserStore = defineStore('user', () => {
   const efficiencyScore = computed(() => {
     // 基于学习时长和完成任务情况计算效率
     // 这里简化处理，实际应该有更复杂的算法
-    return Math.min(5, Math.round((learningStats.value.averageDailyHours * 0.8) + (completedGoalsCount.value * 0.2)))
+    return Math.min(
+      5,
+      Math.round(learningStats.value.averageDailyHours * 0.8 + completedGoalsCount.value * 0.2)
+    )
   })
 
   // 动作
@@ -215,7 +218,7 @@ export const useUserStore = defineStore('user', () => {
       phone: '13800138000',
       joinDate: '2025-09-01'
     }
-    
+
     learningGoals.value = {
       totalScore: 680,
       subjects: {
@@ -230,20 +233,20 @@ export const useUserStore = defineStore('user', () => {
       currentRank: 50,
       targetRank: 10
     }
-    
+
     subjectPreferences.value = {
       favoriteSubjects: ['math', 'physics'],
       weakSubjects: ['english', 'biology'],
       studyOrder: ['math', 'physics', 'chemistry', 'biology', 'chinese', 'english']
     }
-    
+
     learningStats.value = {
       totalStudyHours: 245.5,
       averageDailyHours: 6.8,
       completedCourses: 12,
       achievedGoals: 3
     }
-    
+
     settings.value = {
       notificationEnabled: true,
       theme: 'light',

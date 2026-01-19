@@ -5,7 +5,6 @@
 import { defineStore } from 'pinia'
 
 export const useTimeStore = defineStore('time', () => {
-
   // 系统开始学习时间
   const initStartDate = new Date('2025/9/1')
 
@@ -40,12 +39,12 @@ export const useTimeStore = defineStore('time', () => {
   const daysLeft = getDaysDifference(examDate, currentTime)
 
   // 计算当前日期属于第几周
-  function calculateCurrentWeek  ()  {
+  function calculateCurrentWeek() {
     const firstDayOfWeek = initStartDate.getDay()
     // 调整：ISO标准中周一是一周的开始（0表示周一）, 将周日(0)调整为6，周一(1)调整为0，以此类推
     const adjustedFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
     // 循环周数取模
-    const cycleWeekDay = getCycleWeekDay(currentTime,initStartDate,adjustedFirstDay)
+    const cycleWeekDay = getCycleWeekDay(currentTime, initStartDate, adjustedFirstDay)
     return cycleWeekDay === 0 ? 4 : cycleWeekDay
   }
 
@@ -55,7 +54,7 @@ export const useTimeStore = defineStore('time', () => {
   }
 
   // 计算循环周数
-  function getCycleWeekDay (startTime,endDate,firstDay ){
+  function getCycleWeekDay(startTime, endDate, firstDay) {
     return Math.ceil((getDaysDifference(startTime, endDate) + firstDay) / 7) % 4
   }
 
@@ -69,7 +68,6 @@ export const useTimeStore = defineStore('time', () => {
     currentDate,
     initStartDate,
     examDate,
-    daysLeft,
+    daysLeft
   }
-
 })

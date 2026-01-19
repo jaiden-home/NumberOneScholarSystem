@@ -122,10 +122,11 @@ function handleAddReport(row = null) {
 
 // 处理表单提交
 function handleReportSubmit(reportData) {
-  if (store.editingData) { // 编辑操作
+  if (store.editingData) {
+    // 编辑操作
     store.updateReport(store.editingData.id, reportData)
   } else {
-    store.createReport(reportData)     // 添加操作
+    store.createReport(reportData) // 添加操作
   }
   // 触发添加日报事件
   emit('add-report', reportData)

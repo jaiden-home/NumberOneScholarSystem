@@ -13,7 +13,9 @@
           <div class="time-info-block">
             <div class="time-info-main">
               <span class="time-value-large" id="currentDate"
-                >{{ currentYear }}年{{ currentMonth }}月{{ currentDate }}日 星期{{ weekdayName }}</span
+                >{{ currentYear }}年{{ currentMonth }}月{{ currentDate }}日 星期{{
+                  weekdayName
+                }}</span
               >
             </div>
             <div class="time-info-label">今日</div>
@@ -75,7 +77,6 @@ const currentDate = computed(() => timeStore.currentDate)
 
 const weekInfo = computed(() => systemStore.weeklyThemeTitle)
 const alerts = computed(() => systemStore.alerts)
-
 </script>
 
 <style scoped>

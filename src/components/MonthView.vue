@@ -5,7 +5,8 @@
       <!-- 月份标题和操作按钮 -->
       <div class="month-title-row">
         <div class="month-title">
-          {{ currentYear }}年{{ currentMonth }}月： <span id="month-subtitle">{{ weeklyThemeTitle[store.currentWeekTab] }}</span>
+          {{ currentYear }}年{{ currentMonth }}月：
+          <span id="month-subtitle">{{ weeklyThemeTitle[store.currentWeekTab] }}</span>
         </div>
         <div class="week-nav">
           <div
@@ -69,11 +70,10 @@ import { useSystemStore } from '../stores/systemStore'
 import { useTimeStore } from '../stores/timeStore'
 
 const store = useScheduleStore()
-const {weeklyThemeTitle} = useSystemStore()
-const {currentYear,currentMonth} = useTimeStore()
+const { weeklyThemeTitle } = useSystemStore()
+const { currentYear, currentMonth } = useTimeStore()
 
 const emit = defineEmits(['open-sidebar'])
-
 
 function setCurrentWeekTab(week) {
   store.setCurrentWeekTab(week)

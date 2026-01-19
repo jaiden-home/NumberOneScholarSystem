@@ -24,8 +24,6 @@ export const useTaskStore = defineStore('tasks', () => {
   // 当前选中的周（默认为第1周）
   const currentWeek = ref('1')
 
-
-
   // 当前显示的月份
   const currentMonth = ref('')
 
@@ -92,9 +90,10 @@ export const useTaskStore = defineStore('tasks', () => {
 
         // 检查是否是今天
         const today = new Date()
-        const isToday = dayDate.getFullYear() === today.getFullYear() &&
-                       dayDate.getMonth() === today.getMonth() &&
-                       dayDate.getDate() === today.getDate()
+        const isToday =
+          dayDate.getFullYear() === today.getFullYear() &&
+          dayDate.getMonth() === today.getMonth() &&
+          dayDate.getDate() === today.getDate()
 
         weekDaysData.push({
           date: dateNum,
@@ -124,7 +123,8 @@ export const useTaskStore = defineStore('tasks', () => {
     // 调整：ISO标准中周一是一周的开始（0表示周一）, 将周日(0)调整为6，周一(1)调整为0，以此类推
     const adjustedFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
     // 计算循环周数
-    const cycleWeekDay = Math.ceil((getDaysDifference(now.value, initStartDate) + adjustedFirstDay) / 7) % 4
+    const cycleWeekDay =
+      Math.ceil((getDaysDifference(now.value, initStartDate) + adjustedFirstDay) / 7) % 4
     return cycleWeekDay === 0 ? '4' : cycleWeekDay.toString()
   }
 
@@ -287,7 +287,7 @@ export const useTaskStore = defineStore('tasks', () => {
       month: monthStartFromOne ? d.getMonth() + 1 : d.getMonth(),
       date: d.getDate(),
       weekday: weekdays[d.getDay()],
-      dayName: weekDays[(d.getDay() === 0 ? 6 : d.getDay() - 1)] // 获取英文星期几名称
+      dayName: weekDays[d.getDay() === 0 ? 6 : d.getDay() - 1] // 获取英文星期几名称
     }
   }
 
@@ -303,7 +303,8 @@ export const useTaskStore = defineStore('tasks', () => {
     // 调整：ISO标准中周一是一周的开始（0表示周一）, 将周日(0)调整为6，周一(1)调整为0，以此类推
     const adjustedFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
     // 计算循环周数
-    const cycleWeekDay = Math.ceil((getDaysDifference(now.value, initStartDate) + adjustedFirstDay) / 7) % 4
+    const cycleWeekDay =
+      Math.ceil((getDaysDifference(now.value, initStartDate) + adjustedFirstDay) / 7) % 4
     return cycleWeekDay === 0 ? 4 : cycleWeekDay
   })
 
@@ -389,8 +390,6 @@ export const useTaskStore = defineStore('tasks', () => {
     currentWeek.value = week
   }
 
-
-
   // 持久化
   // 从localStorage读取保存的状态
   // 如果存在保存的状态，则恢复tasks、reports、simpleTodos和alerts，但不恢复currentWeek
@@ -399,7 +398,7 @@ export const useTaskStore = defineStore('tasks', () => {
     const state = JSON.parse(savedState)
     if (state.tasks) {
       // 为没有week属性的任务设置默认值
-      tasks.value = state.tasks.map(task => ({
+      tasks.value = state.tasks.map((task) => ({
         ...task,
         week: task.week || currentWeek.value
       }))
@@ -469,6 +468,6 @@ export const useTaskStore = defineStore('tasks', () => {
     // 时间相关属性
     currentDate,
     adjustedCycleWeekDay,
-    daysLeft,
+    daysLeft
   }
 })

@@ -103,12 +103,11 @@ export const useReportStore = defineStore('reports', () => {
   // @param {Object} data - 更新的数据
   // @returns {void}
   function updateReport(id, data) {
-    const index = reports.value.findIndex(report => report.id === id)
+    const index = reports.value.findIndex((report) => report.id === id)
     if (index !== -1) {
       reports.value[index] = { ...reports.value[index], ...data }
     }
   }
-
 
   // 设置当前页码
   // @param {number} page - 页码
@@ -131,10 +130,7 @@ export const useReportStore = defineStore('reports', () => {
   watch(
     reports,
     () => {
-      localStorage.setItem(
-        'reports-state',
-        JSON.stringify({ reports: reports.value })
-      )
+      localStorage.setItem('reports-state', JSON.stringify({ reports: reports.value }))
     },
     { deep: true }
   )

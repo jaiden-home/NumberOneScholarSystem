@@ -9,25 +9,29 @@ import { useTimeStore } from './timeStore'
 
 export const useScheduleStore = defineStore('schedule', () => {
   // 引用时间store
-  const timeStore = useTimeStore();
+  const timeStore = useTimeStore()
   // 可用的周列表（当前月共4周）
-  const tabWeeks = [1,2,3,4];
+  const tabWeeks = [1, 2, 3, 4]
   // tab选中当前周
-  const currentWeekTab = ref(timeStore.currentWeek);
+  const currentWeekTab = ref(timeStore.currentWeek)
   // 本月周的范围
-  const weekRange = ref([]);
+  const weekRange = ref([])
   // 当前周的时间范围
-  const currentRangeStr = ref('');
+  const currentRangeStr = ref('')
   // 月的周总数据；
-  const weekData = ref({1:null,2:null,3:null,4:null});
+  const weekData = ref({ 1: null, 2: null, 3: null, 4: null })
   // 排班表数组
   const schedules = ref([])
   // 获取当前周的日期列表
-  const currentWeekDate = computed(() => weekData.value[currentWeekTab.value] || []);
+  const currentWeekDate = computed(() => weekData.value[currentWeekTab.value] || [])
   // 设置当前tab是那周
-  const  setCurrentWeekTab = (week)=> currentWeekTab.value = week;
+  const setCurrentWeekTab = (week) => (currentWeekTab.value = week)
   // 获得本月开始时间和结束时间
-  const { startDate, endDate, weekRange:temp } = getWeekDataRange(
+  const {
+    startDate,
+    endDate,
+    weekRange: temp
+  } = getWeekDataRange(
     new Date(`${timeStore.currentYear}/${timeStore.currentMonth}/${timeStore.currentDate}`),
     timeStore.currentWeek,
     timeStore.weekday
@@ -37,17 +41,17 @@ export const useScheduleStore = defineStore('schedule', () => {
   // 当前周的显示文案
   currentRangeStr.value = showCurrentRange(weekRange.value[currentWeekTab.value - 1])
   // 通过周几来获得当前日期
-  const getDateByWeekday = (week) => currentWeekDate.value[week]?.date;
+  const getDateByWeekday = (week) => currentWeekDate.value[week]?.date
   // 获取当前月时间范围
-  function getWeekDataRange  (date = new Date(),week,weekday)  {
+  function getWeekDataRange(date = new Date(), week, weekday) {
     // 星期天转成7
-    const adjustedWeekday = weekday ? weekday: 7
+    const adjustedWeekday = weekday ? weekday : 7
     // 第1周星期一距离当前有多少天
-    const dayPreludeWeek = 7 * week + adjustedWeekday - 7;
+    const dayPreludeWeek = 7 * week + adjustedWeekday - 7
     // 第1周第一天的日期
-    const startDate = formatDate( calculateDate(date, - dayPreludeWeek ))
+    const startDate = formatDate(calculateDate(date, -dayPreludeWeek))
     // 最后1周最后一天的日期
-    const endDate = formatDate( calculateDate(new Date(startDate), 4 * 7 ))
+    const endDate = formatDate(calculateDate(new Date(startDate), 4 * 7))
     // 存储4周的日期范围
     const weekRange = []
     // 循环生成4周的日期范围
@@ -71,39 +75,39 @@ export const useScheduleStore = defineStore('schedule', () => {
       endDate,
       weekRange
     }
-  };
+  }
   // 计算相对于给定日期的目标日期
   function calculateDate(date, days) {
-    const timestamp = new Date(date).getTime();
-    const oneDayMs = 24 * 60 * 60 * 1000; // 一天的毫秒数
-    const newTimestamp = timestamp + (days * oneDayMs);
+    const timestamp = new Date(date).getTime()
+    const oneDayMs = 24 * 60 * 60 * 1000 // 一天的毫秒数
+    const newTimestamp = timestamp + days * oneDayMs
     // 显示需求：当天不进入计算
-    const adjustedTimestamp = days > 0 ? newTimestamp - oneDayMs : newTimestamp + oneDayMs;
-    return new Date(adjustedTimestamp);
+    const adjustedTimestamp = days > 0 ? newTimestamp - oneDayMs : newTimestamp + oneDayMs
+    return new Date(adjustedTimestamp)
   }
   // 将Date对象格式化为字符串
   function formatDate(date) {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // JavaScript月份从0开始，需要+1
-    const day = date.getDate();
-    return `${year}/${month}/${day}`;
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1 // JavaScript月份从0开始，需要+1
+    const day = date.getDate()
+    return `${year}/${month}/${day}`
   }
   // 显示当前日期范围的格式化文本
-  function showCurrentRange ({ startDate,endDate }){
-    const [,fromMonth,fromDay] = startDate.split('/');
-    const [,toMonth,toDay] = endDate.split('/');
+  function showCurrentRange({ startDate, endDate }) {
+    const [, fromMonth, fromDay] = startDate.split('/')
+    const [, toMonth, toDay] = endDate.split('/')
     return fromMonth === toMonth
-      ?`${fromMonth}月${fromDay}~${toDay}日`
-      :`${fromMonth}月${fromDay}日~${toMonth}月${toDay}日`
+      ? `${fromMonth}月${fromDay}~${toDay}日`
+      : `${fromMonth}月${fromDay}日~${toMonth}月${toDay}日`
   }
   // 从tasks引用更新weekData任务的函数
-  function updateWeekDataSchedules  () {
-    weekData.value[currentWeekTab.value].forEach( item => {
+  function updateWeekDataSchedules() {
+    weekData.value[currentWeekTab.value].forEach((item) => {
       // 清空表的任务数组
       item.schedules = []
       // 任务是一天则把当前任务更新
       schedules.value.forEach((schedule) => {
-        if(item.date === schedule.date){
+        if (item.date === schedule.date) {
           item.schedules.push(schedule)
         }
       })
@@ -155,7 +159,15 @@ export const useScheduleStore = defineStore('schedule', () => {
   const generateMockDataByDateRange = (startDateStr, endDateStr) => {
     // 将外部变量移到函数内部定义
     const weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    const weekdayMap = { monday: '星期一', tuesday: '星期二', wednesday: '星期三', thursday: '星期四', friday: '星期五', saturday: '星期六', sunday: '星期日' }
+    const weekdayMap = {
+      monday: '星期一',
+      tuesday: '星期二',
+      wednesday: '星期三',
+      thursday: '星期四',
+      friday: '星期五',
+      saturday: '星期六',
+      sunday: '星期日'
+    }
 
     const startDate = new Date(startDateStr)
     const endDate = new Date(endDateStr)
@@ -184,9 +196,10 @@ export const useScheduleStore = defineStore('schedule', () => {
       const yearNum = currentDate.getFullYear()
 
       // 检查是否是今天
-      const isToday = currentDate.getFullYear() === today.getFullYear() &&
-                      currentDate.getMonth() === today.getMonth() &&
-                      currentDate.getDate() === today.getDate()
+      const isToday =
+        currentDate.getFullYear() === today.getFullYear() &&
+        currentDate.getMonth() === today.getMonth() &&
+        currentDate.getDate() === today.getDate()
 
       mockData.push({
         date: `${yearNum}/${monthNum}/${dateNum}`,
@@ -205,11 +218,18 @@ export const useScheduleStore = defineStore('schedule', () => {
   const data = generateMockDataByDateRange(startDate, endDate)
   // ----------------------------------- //
   // 监听任务变化并更新weekData
-  watch([schedules,currentWeekTab], () => updateWeekDataSchedules(), { deep: true })
+  watch([schedules, currentWeekTab], () => updateWeekDataSchedules(), { deep: true })
   // 监听状态变化并持久化到localStorage
-  watch([schedules], () => localStorage.setItem('scholar-system-state', JSON.stringify({ schedules: schedules.value })), { deep: true })
+  watch(
+    [schedules],
+    () =>
+      localStorage.setItem('scholar-system-state', JSON.stringify({ schedules: schedules.value })),
+    { deep: true }
+  )
   // 监听currentWeekTab变化，更新当前周的时间范围
-  watch(currentWeekTab, week => {currentRangeStr.value = showCurrentRange(weekRange.value[week - 1])})
+  watch(currentWeekTab, (week) => {
+    currentRangeStr.value = showCurrentRange(weekRange.value[week - 1])
+  })
 
   // 切成4份数据
   splitDataIntoWeeks(data, 4)
@@ -218,16 +238,15 @@ export const useScheduleStore = defineStore('schedule', () => {
   // 初始更新weekData任务，并在任务变化时更新
   updateWeekDataSchedules()
   return {
-    currentWeekTab,      // 选中那个周
-    currentRangeStr,     // 显示周的时间范围
-    tabWeeks,            // 周tab栏
-    currentWeekDate,     // 当周的日期
-    schedules,           // 排班列表
-    setCurrentWeekTab,   // 设置当前周 currentWeekTab
-    getDateByWeekday,    // 获取周几是几号
-    addTask,             // 添加任务
-    removeTask,          // 删除任务
-    moveTask,            // 移动任务到指定日期
+    currentWeekTab, // 选中那个周
+    currentRangeStr, // 显示周的时间范围
+    tabWeeks, // 周tab栏
+    currentWeekDate, // 当周的日期
+    schedules, // 排班列表
+    setCurrentWeekTab, // 设置当前周 currentWeekTab
+    getDateByWeekday, // 获取周几是几号
+    addTask, // 添加任务
+    removeTask, // 删除任务
+    moveTask // 移动任务到指定日期
   }
-
 })
