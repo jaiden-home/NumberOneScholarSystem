@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 
 // 函数：获取指定名称的cookie值
@@ -19,6 +20,11 @@ const router = createRouter({
       component: LoginView
     },
     {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView
@@ -28,8 +34,8 @@ const router = createRouter({
 
 // 导航守卫：检查SESSION cookie
 router.beforeEach((to, from, next) => {
-  // 登录页面不需要检查
-  if (to.path === '/') {
+  // 登录和注册页面不需要检查
+  if (to.path === '/' || to.path === '/register') {
     next()
     return
   }

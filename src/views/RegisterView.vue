@@ -1,7 +1,7 @@
 <template>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="login-left">
+  <div class="register-container">
+    <div class="register-card">
+      <div class="register-left">
         <div class="brand">
           <h1>DES备考系统</h1>
           <p class="subtitle">
@@ -34,14 +34,22 @@
         </div>
       </div>
 
-      <div class="login-right">
-        <h2>欢迎登录</h2>
-        <form @submit.prevent="handleLogin">
+      <div class="register-right">
+        <h2>创建账号</h2>
+        <form @submit.prevent="handleRegister">
           <div class="form-group">
             <label>用户名</label>
             <div class="input-wrapper">
               <span class="input-icon">👤</span>
-              <input type="text" v-model="username" placeholder="请输入用户名或邮箱" required />
+              <input type="text" v-model="formData.name" placeholder="请输入用户名" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>邮箱</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📧</span>
+              <input type="email" v-model="formData.email" placeholder="请输入邮箱" required />
             </div>
           </div>
 
@@ -51,8 +59,8 @@
               <span class="input-icon">🔒</span>
               <input
                 :type="showPassword ? 'text' : 'password'"
-                v-model="password"
-                placeholder="请输入密码"
+                v-model="formData.password"
+                placeholder="请输入密码（至少6位）"
                 required
               />
               <span class="toggle-password" @click="showPassword = !showPassword">
@@ -61,76 +69,102 @@
             </div>
           </div>
 
-          <button type="submit" class="login-btn" :disabled="isLoading">
-            {{ isLoading ? '登录中...' : '➜ 登录' }}
-          </button>
-        </form>
+          <div class="form-group">
+            <label>确认密码</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                v-model="formData.confirmPassword"
+                placeholder="请再次输入密码"
+                required
+              />
+            </div>
+          </div>
 
-        <div class="footer-links">
-          还没有账号？ <a href="/register" @click.prevent="goToRegister">立即注册</a>
-        </div>
+          <button type="submit" class="register-btn" :disabled="isLoading">
+            {{ isLoading ? '注册中...' : '➜ 注册' }}
+          </button>
+
+          <div class="footer-links">
+            已有账号？ <a href="/login" @click.prevent="goToLogin">立即登录</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const username = ref('')
-const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
 
-async function handleLogin() {
-  if (!username.value || !password.value) {
-    alert('请输入用户名和密码')
+const formData = reactive({
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
+})
+
+function goToLogin() {
+  router.push('/')
+}
+
+async function handleRegister() {
+  // 验证密码是否一致
+  if (formData.password !== formData.confirmPassword) {
+    alert('两次输入的密码不一致，请重新输入')
+    return
+  }
+
+  // 验证密码长度
+  if (formData.password.length < 6) {
+    alert('密码长度至少为6位')
     return
   }
 
   try {
     isLoading.value = true
-    
-    // 发送登录请求到后端API
-    const response = await fetch('http://localhost:3000/api/users/login', {
+
+    // 发送注册请求到后端API
+    const response = await fetch('http://localhost:3000/api/users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        email: username.value,
-        password: password.value
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
       })
     })
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.message || '登录失败')
+      throw new Error(errorData.message || '注册失败')
     }
 
     const data = await response.json()
-    console.log('登录成功:', data)
-    
-    // 设置SESSION cookie
-    document.cookie = 'SESSION=user_' + data.data.user.id + '; path=/; max-age=2592000' // 30 天有效期
-    router.push('/dashboard')
+    console.log('注册成功:', data)
+
+    // 注册成功后跳转到登录页面
+    alert('注册成功，请登录')
+    router.push('/login')
   } catch (error) {
-    console.error('登录失败:', error)
-    alert('登录失败: ' + error.message)
+    console.error('注册失败:', error)
+    alert('注册失败: ' + error.message)
   } finally {
     isLoading.value = false
   }
 }
-
-function goToRegister() {
-  router.push('/register')
-}
 </script>
 
 <style scoped>
-.login-container {
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -139,19 +173,19 @@ function goToRegister() {
   font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
-.login-card {
+.register-card {
   display: flex;
   width: 900px;
-  height: 550px;
+  height: 600px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
-.login-left {
+.register-left {
   flex: 1;
-  background: linear-gradient(135deg, #3b59f5 0%, #7c4dff 100%); /* Match screenshot closer */
+  background: linear-gradient(135deg, #3b59f5 0%, #7c4dff 100%);
   padding: 40px;
   color: white;
   display: flex;
@@ -208,7 +242,7 @@ function goToRegister() {
   opacity: 0.8;
 }
 
-.login-right {
+.register-right {
   flex: 1;
   padding: 50px;
   display: flex;
@@ -216,14 +250,14 @@ function goToRegister() {
   justify-content: center;
 }
 
-.login-right h2 {
+.register-right h2 {
   font-size: 24px;
   margin-bottom: 30px;
   color: #333;
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
@@ -270,10 +304,10 @@ function goToRegister() {
   user-select: none;
 }
 
-.login-btn {
+.register-btn {
   width: 100%;
   padding: 12px;
-  background-color: #1a73e8; /* Blue */
+  background-color: #1a73e8;
   color: white;
   border: none;
   border-radius: 8px;
@@ -288,8 +322,13 @@ function goToRegister() {
   margin-top: 10px;
 }
 
-.login-btn:hover {
+.register-btn:hover:not(:disabled) {
   background-color: #1557b0;
+}
+
+.register-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .footer-links {
