@@ -77,8 +77,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/userStore'
 
 const router = useRouter()
+const userStore = useUserStore()
 const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -112,6 +114,9 @@ async function handleLogin() {
 
     const data = await response.json()
     console.log('登录成功:', data)
+    
+    // 更新用户信息到store
+    userStore.updateUserInfo(data.data.user)
     
     // 设置SESSION cookie
     document.cookie = 'SESSION=user_' + data.data.user.id + '; path=/; max-age=2592000' // 30 天有效期

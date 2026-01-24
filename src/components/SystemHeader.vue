@@ -76,15 +76,8 @@
         </button>
 
         <div class="user-actions">
-          <!--          <div class="notification-badge">-->
-          <!--            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
-          <!--              <path d="M12.02 2.90991C8.70997 2.90991 6.01997 5.59991 6.01997 8.90991V11.7999C6.01997 12.4099 5.75997 13.3399 5.45997 13.8599L4.29997 15.7899C3.58997 16.9699 4.07997 18.4999 5.37997 18.4999H18.66C19.96 18.4999 20.45 16.9699 19.74 15.7899L18.58 13.8599C18.28 13.3399 18.02 12.4099 18.02 11.7999V8.90991C18.02 5.60991 15.32 2.90991 12.02 2.90991Z" fill="#555555"/>-->
-          <!--              <path d="M13.87 20.4999C13.47 21.1899 12.77 21.5999 12.02 21.5999C11.27 21.5999 10.57 21.1899 10.17 20.4999C10.04 20.2699 10.21 19.9999 10.47 19.9999H13.57C13.82 19.9999 13.99 20.2699 13.87 20.4999Z" fill="#555555"/>-->
-          <!--            </svg>-->
-          <!--            <span class="badge-count">3</span>-->
-          <!--          </div>-->
 
-          <div class="user-profile">
+          <div class="user-profile" @click="toggleUserMenu">
             <div class="avatar">
               <svg
                 width="24"
@@ -104,7 +97,10 @@
                 />
               </svg>
             </div>
-            <span class="username">考生姓名</span>
+            <span class="username">{{ userStore.userInfo.name || '考生姓名' }}</span>
+            <div class="user-menu" v-if="isUserMenuOpen">
+              <div class="menu-item" @click.stop="handleLogout">退出登录</div>
+            </div>
           </div>
         </div>
       </div>
@@ -116,6 +112,7 @@
         <a href="#" class="nav-item active">月视图</a>
         <a href="#" class="nav-item">学习分析</a>
         <a href="#" class="nav-item">目标管理</a>
+        <div class="nav-item" @click="handleLogout">退出登录</div>
       </nav>
     </div>
   </header>
@@ -123,11 +120,47 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/userStore'
 
+const router = useRouter()
+const userStore = useUserStore()
 const isMobileMenuOpen = ref(false)
+const isUserMenuOpen = ref(false)
 
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+function toggleUserMenu() {
+  isUserMenuOpen.value = !isUserMenuOpen.value
+}
+
+async function handleLogout() {
+  try {
+    // 发送登出请求到后端API
+    const response = await fetch('http://localhost:3000/api/users/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error('登出失败')
+    }
+
+    // 清除前端cookie
+    document.cookie = 'SESSION=; path=/; max-age=0'
+
+    // 跳转到登录页面
+    router.push('/login')
+  } catch (error) {
+    console.error('登出失败:', error)
+    // 即使后端请求失败，也清除cookie并跳转到登录页面
+    document.cookie = 'SESSION=; path=/; max-age=0'
+    router.push('/login')
+  }
 }
 </script>
 
@@ -229,6 +262,14 @@ function toggleMobileMenu() {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  position: relative;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.user-profile:hover {
+  background-color: #f3f4f6;
 }
 
 .username {
@@ -245,6 +286,39 @@ function toggleMobileMenu() {
   height: 32px;
   border-radius: 50%;
   overflow: hidden;
+}
+
+.user-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  min-width: 120px;
+  z-index: 1000;
+}
+
+.menu-item {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 6px;
+  margin: 4px;
+}
+
+.menu-item:hover {
+  background-color: #f3f4f6;
+  color: #ef4444;
+}
+
+.mobile-nav .nav-item:last-child {
+  color: #ef4444;
+  font-weight: 500;
 }
 
 /* Mobile Menu Styles */
