@@ -42,14 +42,36 @@ export const useReportStore = defineStore('reports', () => {
     editingData.value = null
   }
 
+  // 清理blob URL的函数
+  function cleanupBlobUrls(reportsData) {
+    return reportsData.map(report => {
+      if (report.mistakeList && Array.isArray(report.mistakeList)) {
+        // 过滤掉blob URL，只保留有效的图片URL或base64数据
+        report.mistakeList = report.mistakeList.filter(photo => {
+          return typeof photo === 'string' && !photo.startsWith('blob:')
+        })
+      }
+      return report
+    })
+  }
+
   // 初始化数据
   function initReports() {
     // 从localStorage读取保存的状态
     const savedReports = localStorage.getItem('reports-state')
     if (savedReports) {
-      const state = JSON.parse(savedReports)
-      if (state.reports) {
-        reports.value = state.reports
+      try {
+        const state = JSON.parse(savedReports)
+        if (state.reports) {
+          // 清理blob URL
+          reports.value = cleanupBlobUrls(state.reports)
+          // 重新保存清理后的数据
+          localStorage.setItem('reports-state', JSON.stringify({ reports: reports.value }))
+        }
+      } catch (error) {
+        console.error('Failed to parse reports from localStorage:', error)
+        // 使用mock数据初始化
+        reports.value = mockData.dailyReports
       }
     } else {
       // 使用mock数据初始化
