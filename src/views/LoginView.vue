@@ -50,6 +50,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
 import BrandFeatures from '../components/BrandFeatures.vue'
+import request from '../utils/request'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -68,23 +69,11 @@ async function handleLogin() {
     isLoading.value = true
 
     // 发送登录请求到后端API
-    const response = await fetch('http://localhost:3000/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: username.value,
-        password: password.value
-      })
+    const data = await request.post('/users/login', {
+      email: username.value,
+      password: password.value
     })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || '登录失败')
-    }
-
-    const data = await response.json()
     console.log('登录成功:', data)
 
     // 更新用户信息到store
@@ -95,7 +84,7 @@ async function handleLogin() {
     router.push('/dashboard')
   } catch (error) {
     console.error('登录失败:', error)
-    alert('登录失败: ' + error.message)
+    alert('登录失败: ' + (error.response?.data?.message || error.message || '登录失败'))
   } finally {
     isLoading.value = false
   }

@@ -70,6 +70,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import BrandFeatures from '../components/BrandFeatures.vue'
+import request from '../utils/request'
 
 const router = useRouter()
 const showPassword = ref(false)
@@ -103,24 +104,12 @@ async function handleRegister() {
     isLoading.value = true
 
     // 发送注册请求到后端API
-    const response = await fetch('http://localhost:3000/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      })
+    const data = await request.post('/users', {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password
     })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || '注册失败')
-    }
-
-    const data = await response.json()
     console.log('注册成功:', data)
 
     // 注册成功后跳转到登录页面
@@ -128,7 +117,7 @@ async function handleRegister() {
     router.push('/login')
   } catch (error) {
     console.error('注册失败:', error)
-    alert('注册失败: ' + error.message)
+    alert('注册失败: ' + (error.response?.data?.message || error.message || '注册失败'))
   } finally {
     isLoading.value = false
   }
