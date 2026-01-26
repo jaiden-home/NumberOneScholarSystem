@@ -34,19 +34,24 @@ const router = createRouter({
 
 // 导航守卫：检查SESSION cookie
 router.beforeEach((to, from, next) => {
-  // 登录和注册页面不需要检查
-  if (to.path === '/' || to.path === '/register') {
-    next()
-    return
-  }
-
   // 获取SESSION cookie
   const session = getCookie('SESSION')
 
+  // 是否登录
+  const isLogin = !session || session === ''
+
+  // 登录和注册页面 检查
+  if (to.path === '/' || to.path === '/register') {
+    // 如果已经登录则跳转/dashboard
+    if(!isLogin){
+      return next('/dashboard')
+    }
+    return next()
+  }
+
   // 如果SESSION不存在或为空，则重定向到登录页面
-  if (!session || session === '') {
-    next('/')
-    return
+  if (isLogin) {
+    return next('/')
   }
 
   // 否则允许访问
