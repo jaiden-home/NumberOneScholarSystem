@@ -41,7 +41,7 @@
             <label>用户名</label>
             <div class="input-wrapper">
               <span class="input-icon">👤</span>
-              <input type="text" v-model="username" placeholder="请输入用户名或邮箱" required />
+              <input type="text" v-model="username" placeholder="请输入注册邮箱" required />
             </div>
           </div>
 
@@ -94,7 +94,7 @@ async function handleLogin() {
 
   try {
     isLoading.value = true
-    
+
     // 发送登录请求到后端API
     const response = await fetch('http://localhost:3000/api/users/login', {
       method: 'POST',
@@ -114,10 +114,10 @@ async function handleLogin() {
 
     const data = await response.json()
     console.log('登录成功:', data)
-    
+
     // 更新用户信息到store
     userStore.updateUserInfo(data.data.user)
-    
+
     // 设置SESSION cookie
     document.cookie = 'SESSION=user_' + data.data.user.id + '; path=/; max-age=2592000' // 30 天有效期
     router.push('/dashboard')
