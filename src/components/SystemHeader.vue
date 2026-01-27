@@ -119,9 +119,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
+import Cookies from 'js-cookie'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -151,14 +152,14 @@ async function handleLogout() {
     }
 
     // 清除前端cookie
-    document.cookie = 'SESSION=; path=/; max-age=0'
+    Cookies.remove('SESSION', { path: '/' })
 
     // 跳转到登录页面
     router.push('/login')
   } catch (error) {
     console.error('登出失败:', error)
     // 即使后端请求失败，也清除cookie并跳转到登录页面
-    document.cookie = 'SESSION=; path=/; max-age=0'
+    Cookies.remove('SESSION', { path: '/' })
     router.push('/login')
   }
 }

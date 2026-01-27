@@ -2,14 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
-
-// 函数：获取指定名称的cookie值
-function getCookie(name) {
-  const value = `; ${document.cookie}`
-  const parts = value.split(`; ${name}=`)
-  if (parts.length === 2) return parts.pop().split(';').shift()
-  return null
-}
+import Cookies from 'js-cookie'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,7 +28,7 @@ const router = createRouter({
 // 导航守卫：检查SESSION cookie
 router.beforeEach((to, from, next) => {
   // 获取SESSION cookie
-  const session = getCookie('SESSION')
+  const session = Cookies.get('SESSION')
 
   // 是否登录
   const isLogin = !session || session === ''

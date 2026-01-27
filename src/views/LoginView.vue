@@ -49,6 +49,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
+import axios from 'axios'
+import Cookies from 'js-cookie'
 import BrandFeatures from '../components/BrandFeatures.vue'
 import request from '../utils/request'
 
@@ -80,7 +82,7 @@ async function handleLogin() {
     userStore.updateUserInfo(data.data.user)
 
     // 设置SESSION cookie
-    document.cookie = 'SESSION=user_' + data.data.user.id + '; path=/; max-age=2592000' // 30 天有效期
+    Cookies.set('SESSION', 'user_' + data.data.user.id, { path: '/', expires: 30 }) // 30 天有效期
     router.push('/dashboard')
   } catch (error) {
     console.error('登录失败:', error)
