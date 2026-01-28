@@ -25,7 +25,7 @@
     <!-- 当前周信息 -->
     <div class="current-week-info">
       <div class="week-range">第{{ store.currentWeekTab }}周：{{ store.currentRangeStr }}</div>
-      <button class="btn-settings" @click="openSettings">⚙️ 设置</button>
+      <button class="btn-settings" :class="{ 'disabled': isCurrentWeekPast }" @click="openSettings">⚙️ 设置</button>
     </div>
 
     <!-- 周计划表格 -->
@@ -69,12 +69,22 @@ import TaskCard from './TaskCard.vue'
 import { useScheduleStore } from '../stores/scheduleStore'
 import { useSystemStore } from '../stores/systemStore'
 import { useTimeStore } from '../stores/timeStore'
+import { computed } from 'vue'
 
 const store = useScheduleStore()
 const { weeklyThemeTitle } = useSystemStore()
 const { currentYear, currentMonth } = useTimeStore()
 
 const emit = defineEmits(['open-sidebar'])
+
+// 检查当前周是否为过去的周
+const isCurrentWeekPast = computed(() => {
+  const currentWeek = store.currentWeekDate
+  if (!currentWeek || currentWeek.length === 0) return false
+  // 检查当前周是否有任何日期在今天或今天之后
+  // 如果所有日期都在今天之前，则返回true
+  return !currentWeek.some(day => !store.isDateBeforeToday(day.date))
+})
 
 function setCurrentWeekTab(week) {
   store.setCurrentWeekTab(week)
@@ -99,7 +109,9 @@ function onDrop(event, targetDay) {
 
 // 打开设置按钮
 function openSettings() {
-  emit('open-sidebar')
+  if (!isCurrentWeekPast.value) {
+    emit('open-sidebar')
+  }
 }
 </script>
 
@@ -126,6 +138,19 @@ function openSettings() {
 
 .btn-settings:active {
   transform: translateY(0);
+}
+
+.btn-settings.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.btn-settings.disabled:hover {
+  background-color: #e5e7eb;
+  transform: none;
+  box-shadow: none;
 }
 
 /* MonthView 响应式样式 */
@@ -206,6 +231,12 @@ function openSettings() {
     color: #000;
     box-shadow: none;
     padding: 0;
+  }
+
+  .btn-settings.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #6b7280;
   }
 
   /* 调整日期列宽度 */

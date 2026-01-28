@@ -161,6 +161,13 @@ function close() {
 function submitForm() {
   // 更新新的日期
   form.value.date = store.getDateByWeekday(form.value.week)
+  
+  // 检查日期是否在过去
+  if (store.isDateBeforeToday(form.value.date)) {
+    alert('不能为已过期的日期添加任务！')
+    return
+  }
+  
   // 是否是编辑
   if (isEdit.value) {
     // 为了简单起见，我们先删除旧任务再添加新任务，或在store中实现updateTask
