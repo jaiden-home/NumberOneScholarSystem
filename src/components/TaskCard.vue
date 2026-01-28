@@ -1,8 +1,8 @@
 <template>
   <div
     class="task-card"
-    :class="{ dragging: isDragging }"
-    draggable="true"
+    :class="{ dragging: isDragging, 'past-date': isPastDate }"
+    :draggable="!isPastDate"
     @dragstart="onDragStart"
     @dragend="onDragEnd"
   >
@@ -17,8 +17,8 @@
       <div v-if="task.reference">参考：{{ task.reference }}</div>
     </div>
     <div class="task-actions">
-      <button class="action-btn edit" @click.stop="$emit('edit', task)">✏️</button>
-      <button class="action-btn delete" @click.stop="deleteTask">🗑️</button>
+      <button class="action-btn edit" :disabled="isPastDate" @click.stop="!isPastDate && $emit('edit', task)">✏️</button>
+      <button class="action-btn delete" :disabled="isPastDate" @click.stop="!isPastDate && deleteTask">🗑️</button>
     </div>
   </div>
 </template>
@@ -34,6 +34,10 @@ const props = defineProps({
   date: {
     type: String,
     required: true
+  },
+  isPastDate: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -66,16 +70,18 @@ const priorityLabel = computed(() => {
 })
 
 function deleteTask() {
-  if (confirm('确定要删除这个任务吗？')) {
+  if (!props.isPastDate && confirm('确定要删除这个任务吗？')) {
     emit('delete', props.task.id)
   }
 }
 
 function onDragStart(e) {
-  isDragging.value = true
-  e.dataTransfer.effectAllowed = 'move'
-  e.dataTransfer.setData('taskId', props.task.id)
-  e.dataTransfer.setData('sourceDay', props.date)
+  if (!props.isPastDate) {
+    isDragging.value = true
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('taskId', props.task.id)
+    e.dataTransfer.setData('sourceDay', props.date)
+  }
 }
 
 function onDragEnd() {
@@ -135,5 +141,22 @@ function onDragEnd() {
   .task-meta > div {
     margin-bottom: 3px;
   }
+}
+
+/* 过去日期任务样式 */
+.task-card.past-date {
+  opacity: 0.7;
+  background-color: #f9fafb;
+}
+
+/* 禁用按钮样式 */
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 </style>

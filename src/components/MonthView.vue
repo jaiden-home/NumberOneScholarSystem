@@ -47,16 +47,17 @@
             :key="task.id"
             :task="task"
             :date="dayInfo.date"
+            :is-past-date="store.isDateBeforeToday(dayInfo.date)"
             @delete="store.removeTask"
             @edit="editTask"
           />
 
-          <div v-if="dayInfo.schedules.length === 0" class="empty-day" @click="openAdd(index)">
+          <div v-if="dayInfo.schedules.length === 0" class="empty-day" :class="{ 'disabled': store.isDateBeforeToday(dayInfo.date) }" @click="!store.isDateBeforeToday(dayInfo.date) && openAdd(index)">
             <div class="empty-day-icon">📝</div>
-            <div>点击添加任务</div>
+            <div>{{ store.isDateBeforeToday(dayInfo.date) ? '已过期' : '点击添加任务' }}</div>
           </div>
 
-          <button v-else class="add-task-btn" @click="openAdd(index)">+ 添加任务</button>
+          <button v-else class="add-task-btn" :class="{ 'disabled': store.isDateBeforeToday(dayInfo.date) }" @click="!store.isDateBeforeToday(dayInfo.date) && openAdd(index)">{{ store.isDateBeforeToday(dayInfo.date) ? '已过期' : '+ 添加任务' }}</button>
         </div>
       </div>
     </div>
@@ -91,7 +92,7 @@ function onDrop(event, targetDay) {
   const taskId = event.dataTransfer.getData('taskId')
   const sourceDay = event.dataTransfer.getData('sourceDay')
 
-  if (sourceDay !== targetDay) {
+  if (sourceDay !== targetDay && !store.isDateBeforeToday(targetDay)) {
     store.moveTask(parseInt(taskId), targetDay)
   }
 }
@@ -279,5 +280,24 @@ function openSettings() {
     padding: 6px 12px;
     font-size: 0.8rem;
   }
+}
+
+/* 禁用状态样式 */
+.empty-day.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-task-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.add-task-btn.disabled:hover {
+  background-color: #e5e7eb;
+  transform: none;
+  box-shadow: none;
 }
 </style>

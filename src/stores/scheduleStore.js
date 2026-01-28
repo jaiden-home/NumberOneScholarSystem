@@ -138,6 +138,15 @@ export const useScheduleStore = defineStore('schedule', () => {
       }
     }
   }
+
+  // 检查日期是否在当前日期之前
+  function isDateBeforeToday(dateStr) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const checkDate = new Date(dateStr)
+    checkDate.setHours(0, 0, 0, 0)
+    return checkDate < today
+  }
   // 从localStorage加载保存的状态
   function loadSavedState() {
     const savedState = localStorage.getItem('scholar-system-state')
@@ -252,6 +261,7 @@ export const useScheduleStore = defineStore('schedule', () => {
     getDateByWeekday, // 获取周几是几号
     addTask, // 添加任务
     removeTask, // 删除任务
-    moveTask // 移动任务到指定日期
+    moveTask, // 移动任务到指定日期
+    isDateBeforeToday // 检查日期是否在当前日期之前
   }
 })
