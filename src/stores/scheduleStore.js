@@ -131,6 +131,11 @@ export const useScheduleStore = defineStore('schedule', () => {
     const task = schedules.value.find((t) => t.id === id)
     if (task) {
       task.date = targetDay
+      // 根据新的日期更新星期信息
+      const dayInfo = weekData.value[currentWeekTab.value].find(item => item.date === targetDay)
+      if (dayInfo) {
+        task.week = weekData.value[currentWeekTab.value].indexOf(dayInfo)
+      }
     }
   }
   // 从localStorage加载保存的状态
