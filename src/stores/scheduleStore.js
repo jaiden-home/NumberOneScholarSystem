@@ -6,6 +6,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import { useTimeStore } from './timeStore'
+import request from '../utils/request'
 
 export const useScheduleStore = defineStore('schedule', () => {
   // 引用时间store
@@ -157,7 +158,8 @@ export const useScheduleStore = defineStore('schedule', () => {
       weekData.value[i + 1] = data.slice(startIndex, endIndex)
     }
   }
-  // ------------- mock数据 -------------- //
+
+  // ------------- 构造本月日程表 -------------- //
   const generateMockDataByDateRange = (startDateStr, endDateStr) => {
     // 将外部变量移到函数内部定义
     const weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -231,6 +233,29 @@ export const useScheduleStore = defineStore('schedule', () => {
   splitDataIntoWeeks(data, 4)
   // 初始更新weekData任务，并在任务变化时更新
   updateWeekDataSchedules()
+
+  // 请求接口拿到排班表
+  const fetchScheduleData = async (startDateStr, endDateStr) => {
+    try {
+      // 发送请求到后端API获取排班数据
+      const response = await request.get('/schedules', {
+        params: {
+          startDate: startDateStr,
+          endDate: endDateStr
+        }
+      })
+
+      // 假设后端返回的数据结构与之前的mockData一致
+      // 如果结构不同，需要根据实际返回结构进行调整
+      return response.data || []
+    } catch (error) {
+      console.error('获取排班数据失败:', error)
+      // 出错时返回空数组，确保应用不会崩溃
+      return []
+    }
+  }
+  fetchScheduleData(startDate, endDate).then(d=>schedules.value = d)
+
   return {
     currentWeekTab, // 选中那个周
     currentRangeStr, // 显示周的时间范围
