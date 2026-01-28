@@ -57,26 +57,8 @@ export const useReportStore = defineStore('reports', () => {
 
   // 初始化数据
   function initReports() {
-    // 从localStorage读取保存的状态
-    const savedReports = localStorage.getItem('reports-state')
-    if (savedReports) {
-      try {
-        const state = JSON.parse(savedReports)
-        if (state.reports) {
-          // 清理blob URL
-          reports.value = cleanupBlobUrls(state.reports)
-          // 重新保存清理后的数据
-          localStorage.setItem('reports-state', JSON.stringify({ reports: reports.value }))
-        }
-      } catch (error) {
-        console.error('Failed to parse reports from localStorage:', error)
-        // 使用mock数据初始化
-        reports.value = mockData.dailyReports
-      }
-    } else {
-      // 使用mock数据初始化
-      reports.value = mockData.dailyReports
-    }
+    // 使用mock数据初始化
+    reports.value = mockData.dailyReports
   }
 
   // 初始化
@@ -147,15 +129,7 @@ export const useReportStore = defineStore('reports', () => {
     currentPage.value = 1
   }
 
-  // 持久化
-  // 监听报告变化并持久化到localStorage
-  watch(
-    reports,
-    () => {
-      localStorage.setItem('reports-state', JSON.stringify({ reports: reports.value }))
-    },
-    { deep: true }
-  )
+
 
   return {
     // 状态

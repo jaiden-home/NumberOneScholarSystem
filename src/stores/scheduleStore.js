@@ -147,19 +147,7 @@ export const useScheduleStore = defineStore('schedule', () => {
     checkDate.setHours(0, 0, 0, 0)
     return checkDate < today
   }
-  // 从localStorage加载保存的状态
-  function loadSavedState() {
-    const savedState = localStorage.getItem('scholar-system-state')
-    if (savedState) {
-      try {
-        const state = JSON.parse(savedState)
-        // 如果有保存的排班数据，则恢复到schedules中
-        schedules.value = state.schedules || []
-      } catch (error) {
-        console.error('加载保存的状态失败:', error)
-      }
-    }
-  }
+
   // 将data平均分成指定份数，赋值给weekData
   function splitDataIntoWeeks(data, weekCount) {
     const itemsPerWeek = Math.ceil(data.length / weekCount)
@@ -233,13 +221,7 @@ export const useScheduleStore = defineStore('schedule', () => {
   // ----------------------------------- //
   // 监听任务变化并更新weekData
   watch([schedules, currentWeekTab], () => updateWeekDataSchedules(), { deep: true })
-  // 监听状态变化并持久化到localStorage
-  watch(
-    [schedules],
-    () =>
-      localStorage.setItem('scholar-system-state', JSON.stringify({ schedules: schedules.value })),
-    { deep: true }
-  )
+
   // 监听currentWeekTab变化，更新当前周的时间范围
   watch(currentWeekTab, (week) => {
     currentRangeStr.value = showCurrentRange(weekRange.value[week - 1])
@@ -247,8 +229,6 @@ export const useScheduleStore = defineStore('schedule', () => {
 
   // 切成4份数据
   splitDataIntoWeeks(data, 4)
-  // 初始化加载保存的状态
-  loadSavedState()
   // 初始更新weekData任务，并在任务变化时更新
   updateWeekDataSchedules()
   return {

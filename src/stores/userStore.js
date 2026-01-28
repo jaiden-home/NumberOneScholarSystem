@@ -263,39 +263,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  // 持久化
-  // 从localStorage读取保存的状态
-  const savedUserState = localStorage.getItem('user-state')
-  if (savedUserState) {
-    const state = JSON.parse(savedUserState)
-    if (state.userInfo) userInfo.value = state.userInfo
-    if (state.learningGoals) learningGoals.value = state.learningGoals
-    if (state.subjectPreferences) subjectPreferences.value = state.subjectPreferences
-    if (state.learningStats) learningStats.value = state.learningStats
-    if (state.settings) {
-      settings.value = state.settings
-      // 应用主题设置
-      document.documentElement.setAttribute('data-theme', settings.value.theme)
-    }
-  }
 
-  // 监听用户状态变化并持久化到localStorage
-  watch(
-    [userInfo, learningGoals, subjectPreferences, learningStats, settings],
-    () => {
-      localStorage.setItem(
-        'user-state',
-        JSON.stringify({
-          userInfo: userInfo.value,
-          learningGoals: learningGoals.value,
-          subjectPreferences: subjectPreferences.value,
-          learningStats: learningStats.value,
-          settings: settings.value
-        })
-      )
-    },
-    { deep: true }
-  )
 
   return {
     userInfo,

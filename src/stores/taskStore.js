@@ -390,23 +390,7 @@ export const useTaskStore = defineStore('tasks', () => {
     currentWeek.value = week
   }
 
-  // 持久化
-  // 从localStorage读取保存的状态
-  // 如果存在保存的状态，则恢复tasks、reports、simpleTodos和alerts，但不恢复currentWeek
-  const savedState = localStorage.getItem('scholar-system-state')
-  if (savedState) {
-    const state = JSON.parse(savedState)
-    if (state.tasks) {
-      // 为没有week属性的任务设置默认值
-      tasks.value = state.tasks.map((task) => ({
-        ...task,
-        week: task.week || currentWeek.value
-      }))
-    }
-    if (state.reports) reports.value = state.reports
-    if (state.simpleTodos) simpleTodos.value = state.simpleTodos
-    if (state.alerts) alerts.value = state.alerts
-  }
+
 
   // 无论是否有保存的状态，都设置为当前周
   currentWeek.value = calculateCurrentWeek()
@@ -425,26 +409,7 @@ export const useTaskStore = defineStore('tasks', () => {
     { deep: true }
   )
 
-  // 监听状态变化并持久化到localStorage
-  // 当tasks、reports、simpleTodos、currentWeek或alerts发生变化时
-  // 自动将状态保存到localStorage，实现数据持久化
-  // 使用deep: true确保深度监听对象变化
-  watch(
-    [tasks, reports, simpleTodos, currentWeek, alerts],
-    () => {
-      localStorage.setItem(
-        'scholar-system-state',
-        JSON.stringify({
-          tasks: tasks.value,
-          reports: reports.value,
-          simpleTodos: simpleTodos.value,
-          currentWeek: currentWeek.value,
-          alerts: alerts.value
-        })
-      )
-    },
-    { deep: true }
-  )
+
 
   return {
     currentWeek,
