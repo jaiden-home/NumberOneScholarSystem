@@ -18,7 +18,7 @@
     </div>
     <div class="task-actions">
       <button class="action-btn edit" :disabled="isPastDate" @click.stop="!isPastDate && $emit('edit', task)">✏️</button>
-      <button class="action-btn delete" :disabled="isPastDate" @click.stop="!isPastDate && deleteTask">🗑️</button>
+      <button class="action-btn delete" :disabled="isPastDate" @click.stop="deleteTask">🗑️</button>
     </div>
   </div>
 </template>
